@@ -1,0 +1,97 @@
+
+ChatGPT
+Open the ChatGPT app
+Try the full app experience
+
+Open
+
+             Build me a complete, single-file shopping website in pure HTML, CSS,             and JavaScript. No frameworks. No backend. No payment gateway. This             is for a small local business that wants to take orders online with             zero investment. === BUSINESS DETAILS === -             Shop Name: [ "WEARIIES" ] Shop             Tagline: ["LIVE WITH TREND"]             - Shop Location: [ROORKEE] - Shop Phone:             [9027684877] - Shop Owner Email:             [gouravgujjar449@gmail.com] - Product Categories: [t-shirt , cargo , jeans , jacket ,shirt etc.] === PRODUCTS (black t-shirt, cargo , shirts ) === Add 2 products with these details for each: -             Product Name - [black t-shirt]Price (in ₹179) - Category - Image URL (https://i.ibb.co/ymy54f1B/razybywngo9xqh9drpnnqzhnaaohovm3maulkjtadcrkadoq-png.png) -   
+Another product : NAME[beige cargo ] price (in rs 369)           Short description ( just started selling process on your intrest) DESIGN: - Clean,             modern, mobile-first design (80%+ users will be on phone) - Shop             name and tagline in header - Product grid with images, name, price,             and "Add to Cart" button - Category filter buttons at the top to             filter products - Sticky cart icon in bottom-right showing item             count - Color scheme: [choose your preference or say "choose a             clean, trustworthy scheme"] CART FUNCTIONALITY: - Clicking "Add to             Cart" adds item with quantity 1 - Cart page/modal shows all added             items with: - Product name, price, quantity - Plus/minus buttons to             change quantity - Remove button for each item - Running subtotal for             each item - Grand total at bottom - Cart data stored in browser             (localStorage) ORDER / CHECKOUT: - "Place Order" button opens a             simple form asking: - Customer Name (required) - Phone Number             (required) - Delivery Address (required) - Any special instructions             (optional) - When form is submitted, it sends an email containing: -             All cart items (name, quantity, price) - Grand total - Customer             details (name, phone, address, instructions) - Use Formspree             (formspree.io) or EmailJS for sending the email — NO backend needed             - For Formspree: action="https://formspree.io/f/[YOUR_FORM_ID]" (the             shop owner creates a free Formspree account and gets the form ID) -             Construct hidden fields that compile the full cart summary into the             email body - After successful submission: - Clear the cart - Show a             confirmation message: "Order placed! [WEARIIES] will connect you "tap to confirm." - Show the shop's WhatsApp link so customer             can directly message IMAGES: - All product images hosted on             imgbb.com (free image hosting, works as CDN) - DO NOT put images in             the project folder or on GitHub - Use direct imgbb URLs in img src             tags - Add lazy loading to all images: loading="lazy" - Add proper             alt text for each product image TECHNICAL: - Everything in a SINGLE             HTML file (HTML + CSS + JS) - Mobile responsive — looks great on             phones - Fast loading — minimal code, optimized images via imgbb CDN             - No external dependencies except Google Fonts (optional) - Smooth             animations on cart interactions - WhatsApp integration: "Chat on             WhatsApp" floating button linking to wa.me/[shop_phone] ===             IMPORTANT NOTES === - This is NOT an e-commerce store with payment             processing - This is an ORDER COLLECTION system — shopkeeper             receives order via email, then contacts customer to confirm             availability, pricing, and delivery - Keep it simple, fast, and             functional - The entire website should work by just opening the HTML             file in a browser — no server needed - Make sure the email contains             a COMPLETE, READABLE order summary — not just form field names             Output: Complete, deployment-ready single HTML file.           
+ Cargo URL -https://i.ibb.co/TpjZds3/1000013705376-Beige-BEIGE-1000013705376-01-2100.jpg
+T-shirt URL -
+https://i.ibb.co/ymy54f1B/razybywngo9xqh9drpnnqzhnaaohovm3maulkjtadcrkadoq-png.png
+
+Also integrate the form for the cart order that would be placed by the customer
+
+Weariies Shopping Website
+· html
+<head>
+.item{display:flex;justify-content:space-between;margin-bottom:10px}
+else display(products.filter(p=>p.category===cat));
+}
+
+function add(i){
+let item=cart.find(c=>c.name===products[i].name);
+if(item)item.qty++;
+else cart.push({...products[i],qty:1});
+save();
+}
+
+function save(){
+localStorage.setItem('cart',JSON.stringify(cart));
+updateCart();
+}
+
+function updateCart(){
+let html='';let total=0;
+cart.forEach((c,i)=>{
+total+=c.price*c.qty;
+html+=`<div class='item'>
+<div>${c.name} x${c.qty}</div>
+<div>
+<button onclick='change(${i},-1)'>-</button>
+<button onclick='change(${i},1)'>+</button>
+<button onclick='removeItem(${i})'>x</button>
+</div>
+</div>`});
+html+=`<h3>Total: ₹${total}</h3>`;
+html+=`<button class='checkout' onclick='checkout()'>Place Order</button>`;
+document.getElementById('cart').innerHTML=html;
+document.getElementById('count').innerText=cart.length;
+}
+
+function change(i,n){
+cart[i].qty+=n;
+if(cart[i].qty<=0)cart.splice(i,1);
+save();
+}
+
+function removeItem(i){cart.splice(i,1);save();}
+
+function toggleCart(){
+let c=document.getElementById('cart');
+c.style.display=c.style.display==='block'?'none':'block';
+updateCart();
+}
+
+function checkout(){
+let summary='';
+let total=0;
+cart.forEach(c=>{
+summary+=c.name+' x'+c.qty+' = ₹'+(c.qty*c.price)+'\n';
+total+=c.qty*c.price;
+});
+summary+='Total: ₹'+total;
+
+let form=`
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+<input type='hidden' name='order' value="${summary}">
+<input required placeholder='Your Name' name='name'><br>
+<input required placeholder='Phone' name='phone'><br>
+<textarea required placeholder='Address' name='address'></textarea><br>
+<textarea placeholder='Instructions' name='notes'></textarea><br>
+<button type='submit'>Confirm Order</button>
+</form>`;
+
+document.getElementById('cart').innerHTML=form;
+
+localStorage.removeItem('cart');
+cart=[];
+updateCart();
+alert('Order placed! WEARIIES will contact you.');
+}
+
+updateCart();
+</script>
+</body>
+</html>
